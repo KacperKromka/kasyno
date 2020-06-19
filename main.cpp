@@ -2,10 +2,13 @@
 #include <stdlib.h>
 #include <vector>
 #include <stdio.h>
+#include <fstream>
 
 using namespace std;
 
 int portfel, x;
+fstream odczyt;
+fstream zapis;
 bool wygrana;
 typedef vector<bool> Talia;
 typedef vector<int> Karty;
@@ -14,6 +17,16 @@ Talia stworzTalie(int t)
 {
     Talia T(t, false);
     return T;
+}
+
+
+
+void rankingZapis (int portfel, string nazwa)
+{
+    cout << "Zapisuje twoj wynik w rankingu" << endl;
+    zapis.open("ranking.txt",ios::out | ios::app);
+    zapis << nazwa << " " << portfel << endl;
+    zapis.close();
 }
 
 string odczytajKarte(int k)
@@ -153,7 +166,7 @@ void blackJack(int &portfel)
     while (punkty < 21 && punktyKomputera < 21 && koniec == false )
     {
         int wybor;
-        cout << "Wpisz 1 aby grac dalej; 2 aby spasowac" << endl;
+        cout << "Wpisz 1 aby grac dalej; \n2 aby spasowac" << endl;
         cin >> wybor;
 
         switch (wybor) {
@@ -268,9 +281,12 @@ void jednorekiBandyta(int &portfel)
         kredyt -= stawka;
     }
     cout << "Stan konta: " << kredyt << endl;
-    cout << "Aby wyplacic gotowke i wyjsc z Slot machine wpisz q" << endl;
+    stanPortfela(portfel);
+    cout << "Aby wyjsc z Slot machine wpisz q, wpisz dowolny inny znak aby grac dalej" << endl;
     cin >> koniec;
-    }while(koniec!= 'q' || koniec!= 'Q');
+    }while(koniec!= 'q' || koniec!= 'Q' );
+    portfel += kredyt;
+    stanPortfela(portfel);
 }
 
 void ruletka(int &portfel)
@@ -316,9 +332,14 @@ void ruletka(int &portfel)
 int main()
 {
     portfel = rand() % 1000 + 500;
+    string nazwa;
+    int bye = 0;
     cout << "Witaj w kasynie!" << endl;
+    cout << "Podaj swoj nick: " << endl;
+    cin >> nazwa;
     stanPortfela(portfel);
-    cout << " 1. BlackJack \n  2. Jednoreki bandyta \n   3. Ruletka \n (Wybierz 1-3): ";
+    do{
+    cout << " 1. BlackJack \n  2. Jednoreki bandyta \n   3. Ruletka \n    4.Zapisz swoj wynik \n     5. Wyswietl RANKING TOP 100\n      6. Wyjscie  (Wybierz 1-6): ";
     cin >> x;
 
     switch(x) {
@@ -326,7 +347,10 @@ int main()
         case 1: {blackJack(portfel); break;}
         case 2: {jednorekiBandyta(portfel); break;}
         case 3: {ruletka(portfel); break;}
-    }
+        case 4: {rankingZapis(portfel,nazwa); break;}
 
+        case 6: {int bye = 22; cout << "Do zobaczenia!" << endl;}
+    }
+    }while(bye!=22);
     return 0;
 }
